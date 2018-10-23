@@ -5,7 +5,7 @@ from django.views import View
 from django.views.generic import ListView, TemplateView, DetailView, FormView
 
 # Create your views here.
-from app_noticias.forms import ContatoForm
+from app_noticias.forms import ContatoForm, DenunciaNoticiaForm
 from .models import *
 
 
@@ -102,3 +102,23 @@ def categoria_detalhes(request, slug):
         })
     except Categoria.DoesNotExist:
         return Http404('Categoria não encontrada')
+
+#VIEW DO FORMULÁRIO DE DENÚNCIA DE NPTÍCIAS!
+class DenunciaNoticiaView(FormView):
+    template_name = 'app_noticias/denuncias.html' #estamos passando o nome do template para variavel template_name.
+    form_class = DenunciaNoticiaForm # classe DenunciaNoticiaForm do arquivo forms.py
+
+    def form_valid(self, form):
+        dados = form.clean()
+    # INSTANCIANDO UM OBJETO DA CLASSE DenunciaNoticia
+        denuncia = DenunciaNoticia(state=dados['state'], city=dados['city'], description=dados['description']) 
+    # PERSISTINDO OS OBJETOS (DADOS) NO SQLITE.
+        denuncia.save()
+    #PASSANDO COMO RETORNO A RECUPERAÇÃO DOS DADOS JÁ VALIDADOS OBTIDOS PELO FORMULÁRIO.
+        return super().form_valid(form)
+    
+    def get_success_url(self):# MÉTODO DE SUCESSO RETORNA UMA URL DE SUCESSO SE VALIDAÇÃO DE FORMULARIO ESTIVER TUDO OK.
+        return reverse ('denuncia_sucesso')
+
+class DenunciaNoticiaSucessoView(TemplateView):
+    template_name = 'app_noticias/denuncia_sucesso.html'
