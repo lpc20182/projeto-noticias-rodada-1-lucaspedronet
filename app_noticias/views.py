@@ -24,7 +24,10 @@ class NoticiasResumoView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['total'] = Noticia.objects.count()
-        return context
+        context['state'] =  DenunciaNoticia.objects.count()
+        context['city'] =  DenunciaNoticia.objects.count()
+
+        return context   
 
 
 class NoticiaDetalhesView(DetailView):
@@ -116,9 +119,31 @@ class DenunciaNoticiaView(FormView):
         denuncia.save()
     #PASSANDO COMO RETORNO A RECUPERAÇÃO DOS DADOS JÁ VALIDADOS OBTIDOS PELO FORMULÁRIO.
         return super().form_valid(form)
+
     
     def get_success_url(self):# MÉTODO DE SUCESSO RETORNA UMA URL DE SUCESSO SE VALIDAÇÃO DE FORMULARIO ESTIVER TUDO OK.
         return reverse ('denuncia_sucesso')
 
 class DenunciaNoticiaSucessoView(TemplateView):
     template_name = 'app_noticias/denuncia_sucesso.html'
+
+# RESUMO DAS DENÚNCIAS DE NOTÍCIAS
+
+# QUANTIDADE DE DENÚCIAS POR ESTADO e CIDADE
+# def quantidade_denuncias_por_estado_cidade(request, uf, cidade):
+#     denuncias = DenunciaNoticia.objects.all()
+#     teste = DenunciaNoticiaForm.isValid()
+#     estado = teste.filter(state=uf).count()
+#     cidade = teste.filter(city=cidade).count()
+#     return render(request, 'app_noticias/resumo.html', {
+#         'estado': estado,
+#         'cidade': cidade,
+#         'teste': teste,
+#     })
+
+# def quantidade_denuncias_por_cidade(request, cidade):
+#     denuncias = DenunciaNoticia.objects.all()
+#     UF = denuncias.filter(state=uf).count()
+#     return render(request, 'app_noticias/resumo.html', {
+#         'estado': denuncias,
+#     })

@@ -34,6 +34,6 @@ class DenunciaNoticiaForm(forms.Form):
             self.add_error('description', 'Descrição da denúcia deve conter no mínimo 10 carectere!')
         ufs = ['TO', 'DF', 'GO', 'RJ', 'SP']
         for uf in ufs:
-            if uf in description.lower():
+            if uf in state.lower():
                 self.add_error('state', 'Estado não aceito!')
         return dados
